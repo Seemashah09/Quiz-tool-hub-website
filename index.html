@@ -1,0 +1,1128 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizToolHub – Free Online Learning &amp; Quiz Tools</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet">
+  <style>
+html, body { height: 100%; margin: 0; }
+* { box-sizing: border-box; }
+
+:root {
+  --bg: #0a0e1a;
+  --surface: #141929;
+  --text: #e8eaf0;
+  --primary: #6c5ce7;
+  --secondary: #00cec9;
+}
+
+body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
+
+.font-display { font-family: 'DM Serif Display', serif; }
+
+/* Animated gradient background */
+.hero-bg {
+  background: 
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(108,92,231,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(0,206,201,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 10%, rgba(253,121,168,0.08) 0%, transparent 50%),
+    var(--bg);
+}
+
+/* Floating orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orbFloat 8s ease-in-out infinite;
+  pointer-events: none;
+}
+.orb-1 { width: 300px; height: 300px; background: rgba(108,92,231,0.2); top: 5%; left: 10%; animation-delay: 0s; }
+.orb-2 { width: 200px; height: 200px; background: rgba(0,206,201,0.15); top: 40%; right: 10%; animation-delay: -3s; }
+.orb-3 { width: 250px; height: 250px; background: rgba(253,121,168,0.1); bottom: 10%; left: 30%; animation-delay: -5s; }
+
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(108,92,231,0.2);
+}
+
+/* Stagger animations */
+.stagger-in { opacity: 0; transform: translateY(30px); animation: staggerIn 0.6s ease forwards; }
+@keyframes staggerIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Quiz game styles */
+.quiz-option {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid rgba(108,92,231,0.3);
+}
+.quiz-option:hover { border-color: var(--primary); background: rgba(108,92,231,0.1); }
+.quiz-option.correct { border-color: #00b894; background: rgba(0,184,148,0.15); }
+.quiz-option.wrong { border-color: #d63031; background: rgba(214,48,49,0.15); }
+
+/* Memory game */
+.memory-card {
+  perspective: 1000px;
+  cursor: pointer;
+  width: 80px;
+  height: 80px;
+}
+.memory-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+.memory-card.flipped .memory-card-inner { transform: rotateY(180deg); }
+.memory-card-front, .memory-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.memory-card-front { background: linear-gradient(135deg, var(--primary), #a29bfe); }
+.memory-card-back { background: var(--surface); border: 2px solid rgba(108,92,231,0.3); transform: rotateY(180deg); }
+
+/* Progress bar */
+.progress-fill {
+  transition: width 0.5s ease;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+/* Blog card image placeholder */
+.blog-thumb {
+  background: linear-gradient(135deg, rgba(108,92,231,0.3), rgba(0,206,201,0.2));
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+/* Nav link active */
+.nav-active { color: var(--primary) !important; }
+
+/* Pulse animation for CTA */
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(108,92,231,0.3); }
+  50% { box-shadow: 0 0 40px rgba(108,92,231,0.5); }
+}
+
+/* Typing effect for hero */
+.typing-cursor::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+  color: var(--secondary);
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Mobile menu */
+.mobile-menu { transform: translateX(100%); transition: transform 0.3s ease; }
+.mobile-menu.open { transform: translateX(0); }
+
+/* IQ meter */
+.iq-meter-fill {
+  transition: width 1s ease;
+  background: linear-gradient(90deg, #d63031, #fdcb6e, #00b894, var(--primary));
+}
+
+/* Speed test dot */
+.speed-dot {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--primary);
+  position: absolute;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.speed-dot:active { transform: scale(0.9); }
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto">
+   <!-- Navigation -->
+   <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl" style="background: rgba(10,14,26,0.85); border-bottom: 1px solid rgba(108,92,231,0.15);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex items-center justify-between h-16">
+      <a href="#" onclick="navigateTo('home')" class="flex items-center gap-2 group cursor-pointer">
+       <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+        <i data-lucide="brain" style="width:20px;height:20px;color:#fff;"></i>
+       </div><span id="nav-site-name" class="text-lg font-bold tracking-tight" style="color:var(--text);">QuizToolHub</span> </a>
+      <div class="hidden md:flex items-center gap-1">
+       <a onclick="navigateTo('home')" class="nav-link nav-active px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors hover:text-white" style="color:rgba(232,234,240,0.6);" data-page="home">Home</a> <a onclick="navigateTo('quiztools')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors hover:text-white" style="color:rgba(232,234,240,0.6);" data-page="quiztools">Quiz Tools</a> <a onclick="navigateTo('braingames')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors hover:text-white" style="color:rgba(232,234,240,0.6);" data-page="braingames">Brain Games</a> <a onclick="navigateTo('iqtest')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors hover:text-white" style="color:rgba(232,234,240,0.6);" data-page="iqtest">IQ Tests</a> <a onclick="navigateTo('blog')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors hover:text-white" style="color:rgba(232,234,240,0.6);" data-page="blog">Blog</a> <a onclick="navigateTo('about')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors hover:text-white" style="color:rgba(232,234,240,0.6);" data-page="about">About</a> <a onclick="navigateTo('contact')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors hover:text-white" style="color:rgba(232,234,240,0.6);" data-page="contact">Contact</a>
+      </div><button id="mobile-toggle" class="md:hidden p-2 rounded-lg" style="color:var(--text);" onclick="toggleMobileMenu()"> <i data-lucide="menu" style="width:24px;height:24px;"></i> </button>
+     </div>
+    </div>
+   </nav><!-- Mobile Menu -->
+   <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 bottom-0 z-50 w-72 p-6 flex flex-col gap-2" style="background:var(--surface);">
+    <div class="flex justify-end mb-4">
+     <button onclick="toggleMobileMenu()" style="color:var(--text);"><i data-lucide="x" style="width:24px;height:24px;"></i></button>
+    </div><a onclick="navigateTo('home');toggleMobileMenu();" class="px-4 py-3 rounded-lg text-base font-medium cursor-pointer" style="color:var(--text);">Home</a> <a onclick="navigateTo('quiztools');toggleMobileMenu();" class="px-4 py-3 rounded-lg text-base font-medium cursor-pointer" style="color:var(--text);">Quiz Tools</a> <a onclick="navigateTo('braingames');toggleMobileMenu();" class="px-4 py-3 rounded-lg text-base font-medium cursor-pointer" style="color:var(--text);">Brain Games</a> <a onclick="navigateTo('iqtest');toggleMobileMenu();" class="px-4 py-3 rounded-lg text-base font-medium cursor-pointer" style="color:var(--text);">IQ Tests</a> <a onclick="navigateTo('blog');toggleMobileMenu();" class="px-4 py-3 rounded-lg text-base font-medium cursor-pointer" style="color:var(--text);">Blog</a> <a onclick="navigateTo('about');toggleMobileMenu();" class="px-4 py-3 rounded-lg text-base font-medium cursor-pointer" style="color:var(--text);">About</a> <a onclick="navigateTo('contact');toggleMobileMenu();" class="px-4 py-3 rounded-lg text-base font-medium cursor-pointer" style="color:var(--text);">Contact</a>
+   </div><!-- ===================== HOME PAGE ===================== -->
+   <main id="page-home" class="page-content">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-20 px-4">
+     <div class="orb orb-1"></div>
+     <div class="orb orb-2"></div>
+     <div class="orb orb-3"></div>
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <div class="stagger-in" style="animation-delay:0.1s;">
+       <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide mb-6" style="background:rgba(108,92,231,0.15);color:var(--primary);border:1px solid rgba(108,92,231,0.3);"> <i data-lucide="sparkles" style="width:14px;height:14px;"></i> 100% Free – No Sign Up Required </span>
+      </div>
+      <h1 id="hero-headline" class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 stagger-in leading-tight" style="animation-delay:0.2s;color:var(--text);">Welcome to <span style="background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">QuizToolHub</span></h1>
+      <p id="hero-subheadline" class="text-lg sm:text-xl mb-10 stagger-in max-w-2xl mx-auto" style="animation-delay:0.3s;color:rgba(232,234,240,0.65);">Boost your brain, test your skills, and have fun with quizzes, brain games, and IQ tests!</p>
+      <div class="flex flex-wrap justify-center gap-4 stagger-in" style="animation-delay:0.4s;">
+       <button onclick="navigateTo('quiztools')" class="pulse-glow px-8 py-3.5 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background:linear-gradient(135deg,var(--primary),#a29bfe);"> <span class="flex items-center gap-2"><i data-lucide="play" style="width:18px;height:18px;"></i> Try a Quiz Now</span> </button> <button onclick="navigateTo('braingames')" class="px-8 py-3.5 rounded-xl font-semibold transition-all hover:scale-105" style="background:rgba(0,206,201,0.15);color:var(--secondary);border:1px solid rgba(0,206,201,0.3);"> <span class="flex items-center gap-2"><i data-lucide="gamepad-2" style="width:18px;height:18px;"></i> Play Brain Games</span> </button> <button onclick="navigateTo('iqtest')" class="px-8 py-3.5 rounded-xl font-semibold transition-all hover:scale-105" style="background:rgba(253,121,168,0.15);color:#fd79a8;border:1px solid rgba(253,121,168,0.3);"> <span class="flex items-center gap-2"><i data-lucide="bar-chart-3" style="width:18px;height:18px;"></i> Take IQ Test</span> </button>
+      </div>
+     </div>
+    </section><!-- Stats Bar -->
+    <section class="py-8 px-4" style="background:var(--surface);border-top:1px solid rgba(108,92,231,0.1);border-bottom:1px solid rgba(108,92,231,0.1);">
+     <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div>
+       <div class="text-2xl sm:text-3xl font-bold" style="color:var(--primary);">
+        50+
+       </div>
+       <div class="text-sm mt-1" style="color:rgba(232,234,240,0.5);">
+        Quiz Categories
+       </div>
+      </div>
+      <div>
+       <div class="text-2xl sm:text-3xl font-bold" style="color:var(--secondary);">
+        100K+
+       </div>
+       <div class="text-sm mt-1" style="color:rgba(232,234,240,0.5);">
+        Quizzes Taken
+       </div>
+      </div>
+      <div>
+       <div class="text-2xl sm:text-3xl font-bold" style="color:#fd79a8;">
+        15+
+       </div>
+       <div class="text-sm mt-1" style="color:rgba(232,234,240,0.5);">
+        Brain Games
+       </div>
+      </div>
+      <div>
+       <div class="text-2xl sm:text-3xl font-bold" style="color:#fdcb6e;">
+        4.9★
+       </div>
+       <div class="text-sm mt-1" style="color:rgba(232,234,240,0.5);">
+        User Rating
+       </div>
+      </div>
+     </div>
+    </section><!-- Feature Cards -->
+    <section class="py-20 px-4">
+     <div class="max-w-6xl mx-auto">
+      <h2 class="font-display text-3xl sm:text-4xl font-bold text-center mb-4" style="color:var(--text);">Explore Our Tools</h2>
+      <p class="text-center mb-12 max-w-xl mx-auto" style="color:rgba(232,234,240,0.5);">Everything you need to train your brain and have fun</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+       <!-- Quiz Tools Card -->
+       <div class="card-hover rounded-2xl p-6 cursor-pointer" style="background:var(--surface);border:1px solid rgba(108,92,231,0.15);" onclick="navigateTo('quiztools')">
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style="background:rgba(108,92,231,0.15);">
+         <i data-lucide="help-circle" style="width:28px;height:28px;color:var(--primary);"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">Quiz Tools</h3>
+        <p class="text-sm mb-4" style="color:rgba(232,234,240,0.5);">Math, Logic, English &amp; Trivia quizzes to challenge your knowledge.</p><span class="text-sm font-semibold flex items-center gap-1" style="color:var(--primary);">Start a Quiz <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></span>
+       </div><!-- Brain Games Card -->
+       <div class="card-hover rounded-2xl p-6 cursor-pointer" style="background:var(--surface);border:1px solid rgba(0,206,201,0.15);" onclick="navigateTo('braingames')">
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style="background:rgba(0,206,201,0.15);">
+         <i data-lucide="gamepad-2" style="width:28px;height:28px;color:var(--secondary);"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">Brain Games</h3>
+        <p class="text-sm mb-4" style="color:rgba(232,234,240,0.5);">Memory, Speed &amp; Puzzle games to sharpen your cognitive skills.</p><span class="text-sm font-semibold flex items-center gap-1" style="color:var(--secondary);">Play Now <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></span>
+       </div><!-- IQ Tests Card -->
+       <div class="card-hover rounded-2xl p-6 cursor-pointer" style="background:var(--surface);border:1px solid rgba(253,121,168,0.15);" onclick="navigateTo('iqtest')">
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style="background:rgba(253,121,168,0.15);">
+         <i data-lucide="bar-chart-3" style="width:28px;height:28px;color:#fd79a8;"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">IQ Tests</h3>
+        <p class="text-sm mb-4" style="color:rgba(232,234,240,0.5);">Take a fun online IQ test and discover your cognitive abilities.</p><span class="text-sm font-semibold flex items-center gap-1" style="color:#fd79a8;">Take IQ Test <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></span>
+       </div><!-- Blog Card -->
+       <div class="card-hover rounded-2xl p-6 cursor-pointer" style="background:var(--surface);border:1px solid rgba(253,203,110,0.15);" onclick="navigateTo('blog')">
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style="background:rgba(253,203,110,0.15);">
+         <i data-lucide="book-open" style="width:28px;height:28px;color:#fdcb6e;"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">Blog &amp; Tutorials</h3>
+        <p class="text-sm mb-4" style="color:rgba(232,234,240,0.5);">Tips, tricks, and guides to improve your brain skills.</p><span class="text-sm font-semibold flex items-center gap-1" style="color:#fdcb6e;">Read Articles <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></span>
+       </div><!-- About Card -->
+       <div class="card-hover rounded-2xl p-6 cursor-pointer" style="background:var(--surface);border:1px solid rgba(116,185,255,0.15);" onclick="navigateTo('about')">
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style="background:rgba(116,185,255,0.15);">
+         <i data-lucide="info" style="width:28px;height:28px;color:#74b9ff;"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">About Us</h3>
+        <p class="text-sm mb-4" style="color:rgba(232,234,240,0.5);">Learn about our mission to make learning fun and accessible.</p><span class="text-sm font-semibold flex items-center gap-1" style="color:#74b9ff;">Learn More <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></span>
+       </div><!-- Contact Card -->
+       <div class="card-hover rounded-2xl p-6 cursor-pointer" style="background:var(--surface);border:1px solid rgba(162,155,254,0.15);" onclick="navigateTo('contact')">
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style="background:rgba(162,155,254,0.15);">
+         <i data-lucide="mail" style="width:28px;height:28px;color:#a29bfe;"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">Contact</h3>
+        <p class="text-sm mb-4" style="color:rgba(232,234,240,0.5);">Got questions or feedback? We'd love to hear from you.</p><span class="text-sm font-semibold flex items-center gap-1" style="color:#a29bfe;">Get in Touch <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></span>
+       </div>
+      </div>
+     </div>
+    </section><!-- Recent Blog Posts -->
+    <section class="py-20 px-4" style="background:var(--surface);">
+     <div class="max-w-6xl mx-auto">
+      <h2 class="font-display text-3xl font-bold text-center mb-4" style="color:var(--text);">Latest from the Blog</h2>
+      <p class="text-center mb-12" style="color:rgba(232,234,240,0.5);">Tips and insights to sharpen your mind</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="home-blog-grid"></div>
+      <div class="text-center mt-10">
+       <button onclick="navigateTo('blog')" class="px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105" style="background:rgba(108,92,231,0.15);color:var(--primary);border:1px solid rgba(108,92,231,0.3);"> View All Articles <i data-lucide="arrow-right" style="width:16px;height:16px;display:inline;vertical-align:middle;"></i> </button>
+      </div>
+     </div>
+    </section>
+   </main><!-- ===================== QUIZ TOOLS PAGE ===================== -->
+   <main id="page-quiztools" class="page-content hidden">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-12 px-4">
+     <div class="orb orb-1"></div>
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4" style="color:var(--text);">Quiz Tools</h1>
+      <p class="text-lg mb-8" style="color:rgba(232,234,240,0.65);">Math, Logic, English, and Trivia – pick your challenge!</p>
+     </div>
+    </section>
+    <section class="py-12 px-4">
+     <div class="max-w-4xl mx-auto">
+      <!-- Quiz Category Tabs -->
+      <div class="flex flex-wrap justify-center gap-3 mb-8">
+       <button onclick="startQuiz('math')" class="quiz-cat-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(108,92,231,0.2);color:var(--primary);border:1px solid rgba(108,92,231,0.3);"> <i data-lucide="calculator" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;"></i> Math </button> <button onclick="startQuiz('logic')" class="quiz-cat-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(0,206,201,0.2);color:var(--secondary);border:1px solid rgba(0,206,201,0.3);"> <i data-lucide="lightbulb" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;"></i> Logic </button> <button onclick="startQuiz('english')" class="quiz-cat-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(253,121,168,0.2);color:#fd79a8;border:1px solid rgba(253,121,168,0.3);"> <i data-lucide="book" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;"></i> English </button> <button onclick="startQuiz('trivia')" class="quiz-cat-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(253,203,110,0.2);color:#fdcb6e;border:1px solid rgba(253,203,110,0.3);"> <i data-lucide="trophy" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;"></i> Trivia </button>
+      </div><!-- Quiz Area -->
+      <div id="quiz-area" class="rounded-2xl p-6 sm:p-8" style="background:var(--surface);border:1px solid rgba(108,92,231,0.15);">
+       <div class="text-center py-12">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background:rgba(108,92,231,0.15);">
+         <i data-lucide="play" style="width:36px;height:36px;color:var(--primary);"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">Select a Category Above</h3>
+        <p class="text-sm" style="color:rgba(232,234,240,0.5);">Choose Math, Logic, English, or Trivia to begin your quiz!</p>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main><!-- ===================== BRAIN GAMES PAGE ===================== -->
+   <main id="page-braingames" class="page-content hidden">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-12 px-4">
+     <div class="orb orb-2"></div>
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4" style="color:var(--text);">Brain Games</h1>
+      <p class="text-lg mb-8" style="color:rgba(232,234,240,0.65);">Memory, Speed, and Puzzle games to sharpen your mind</p>
+     </div>
+    </section>
+    <section class="py-12 px-4">
+     <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap justify-center gap-3 mb-8">
+       <button onclick="startBrainGame('memory')" class="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(108,92,231,0.2);color:var(--primary);border:1px solid rgba(108,92,231,0.3);"> <i data-lucide="grid" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;"></i> Memory Match </button> <button onclick="startBrainGame('speed')" class="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(0,206,201,0.2);color:var(--secondary);border:1px solid rgba(0,206,201,0.3);"> <i data-lucide="zap" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;"></i> Speed Tap </button> <button onclick="startBrainGame('puzzle')" class="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(253,121,168,0.2);color:#fd79a8;border:1px solid rgba(253,121,168,0.3);"> <i data-lucide="puzzle" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;"></i> Number Puzzle </button>
+      </div>
+      <div id="braingame-area" class="rounded-2xl p-6 sm:p-8" style="background:var(--surface);border:1px solid rgba(0,206,201,0.15);">
+       <div class="text-center py-12">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background:rgba(0,206,201,0.15);">
+         <i data-lucide="gamepad-2" style="width:36px;height:36px;color:var(--secondary);"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color:var(--text);">Pick a Brain Game</h3>
+        <p class="text-sm" style="color:rgba(232,234,240,0.5);">Choose Memory Match, Speed Tap, or Number Puzzle to play!</p>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main><!-- ===================== IQ TEST PAGE ===================== -->
+   <main id="page-iqtest" class="page-content hidden">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-12 px-4">
+     <div class="orb orb-3"></div>
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4" style="color:var(--text);">Online IQ Test</h1>
+      <p class="text-lg mb-8" style="color:rgba(232,234,240,0.65);">Test your cognitive abilities with our fun IQ assessment</p>
+      <p class="text-xs px-4 py-2 rounded-lg inline-block" style="background:rgba(253,121,168,0.1);color:#fd79a8;border:1px solid rgba(253,121,168,0.2);">⚡ For entertainment &amp; educational purposes only</p>
+     </div>
+    </section>
+    <section class="py-12 px-4">
+     <div class="max-w-3xl mx-auto">
+      <div id="iq-area" class="rounded-2xl p-6 sm:p-8" style="background:var(--surface);border:1px solid rgba(253,121,168,0.15);">
+       <div class="text-center py-8">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background:rgba(253,121,168,0.15);">
+         <i data-lucide="brain" style="width:36px;height:36px;color:#fd79a8;"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-3" style="color:var(--text);">Ready to Test Your IQ?</h3>
+        <p class="text-sm mb-6 max-w-md mx-auto" style="color:rgba(232,234,240,0.5);">Answer 10 challenging questions covering patterns, logic, and problem solving. Results are for fun only!</p><button onclick="startIQTest()" class="px-8 py-3.5 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background:linear-gradient(135deg,#fd79a8,#e17055);"> Take IQ Test Now </button>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main><!-- ===================== BLOG PAGE ===================== -->
+   <main id="page-blog" class="page-content hidden">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-12 px-4">
+     <div class="orb orb-1"></div>
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4" style="color:var(--text);">Blog &amp; Tutorials</h1>
+      <p class="text-lg" style="color:rgba(232,234,240,0.65);">Tips, tricks, and guides to level up your brain</p>
+     </div>
+    </section>
+    <section class="py-12 px-4">
+     <div class="max-w-6xl mx-auto">
+      <!-- Blog Category Filter -->
+      <div class="flex flex-wrap justify-center gap-2 mb-10">
+       <button onclick="filterBlog('all')" class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:var(--primary);color:#fff;">All</button> <button onclick="filterBlog('iq')" class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:rgba(108,92,231,0.15);color:var(--primary);">IQ Tests</button> <button onclick="filterBlog('logic')" class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:rgba(108,92,231,0.15);color:var(--primary);">Logic &amp; Math</button> <button onclick="filterBlog('language')" class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:rgba(108,92,231,0.15);color:var(--primary);">Language</button> <button onclick="filterBlog('brain')" class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:rgba(108,92,231,0.15);color:var(--primary);">Brain Games</button> <button onclick="filterBlog('fun')" class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:rgba(108,92,231,0.15);color:var(--primary);">Fun Quizzes</button>
+      </div>
+      <div id="blog-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+     </div>
+    </section>
+   </main><!-- ===================== ABOUT PAGE ===================== -->
+   <main id="page-about" class="page-content hidden">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-12 px-4">
+     <div class="orb orb-2"></div>
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4" style="color:var(--text);">About QuizToolHub</h1>
+      <p class="text-lg" style="color:rgba(232,234,240,0.65);">Free hub for quizzes, brain training, and learning</p>
+     </div>
+    </section>
+    <section class="py-16 px-4">
+     <div class="max-w-3xl mx-auto">
+      <div class="rounded-2xl p-8" style="background:var(--surface);border:1px solid rgba(108,92,231,0.15);">
+       <p id="about-text" class="text-base leading-relaxed mb-6" style="color:rgba(232,234,240,0.7);">QuizToolHub is your free online destination for quizzes, brain games, and IQ tests. We believe learning should be fun, accessible, and engaging for everyone.</p>
+       <div class="grid sm:grid-cols-3 gap-6 mt-8">
+        <div class="text-center p-4 rounded-xl" style="background:rgba(108,92,231,0.1);">
+         <i data-lucide="target" style="width:32px;height:32px;color:var(--primary);margin:0 auto 12px;display:block;"></i>
+         <h4 class="font-bold mb-1" style="color:var(--text);">Our Mission</h4>
+         <p class="text-xs" style="color:rgba(232,234,240,0.5);">Make brain training free &amp; fun for all ages.</p>
+        </div>
+        <div class="text-center p-4 rounded-xl" style="background:rgba(0,206,201,0.1);">
+         <i data-lucide="heart" style="width:32px;height:32px;color:var(--secondary);margin:0 auto 12px;display:block;"></i>
+         <h4 class="font-bold mb-1" style="color:var(--text);">100% Free</h4>
+         <p class="text-xs" style="color:rgba(232,234,240,0.5);">No sign-ups, no hidden fees. Just play!</p>
+        </div>
+        <div class="text-center p-4 rounded-xl" style="background:rgba(253,121,168,0.1);">
+         <i data-lucide="users" style="width:32px;height:32px;color:#fd79a8;margin:0 auto 12px;display:block;"></i>
+         <h4 class="font-bold mb-1" style="color:var(--text);">For Everyone</h4>
+         <p class="text-xs" style="color:rgba(232,234,240,0.5);">Kids, students, adults – everyone is welcome.</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main><!-- ===================== CONTACT PAGE ===================== -->
+   <main id="page-contact" class="page-content hidden">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-12 px-4">
+     <div class="orb orb-3"></div>
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4" style="color:var(--text);">Contact Us</h1>
+      <p class="text-lg" style="color:rgba(232,234,240,0.65);">Reach out – we'd love to hear from you!</p>
+     </div>
+    </section>
+    <section class="py-16 px-4">
+     <div class="max-w-xl mx-auto">
+      <form id="contact-form" class="rounded-2xl p-8 space-y-5" style="background:var(--surface);border:1px solid rgba(108,92,231,0.15);" onsubmit="handleContactSubmit(event)">
+       <div>
+        <label for="contact-name" class="block text-sm font-medium mb-1.5" style="color:rgba(232,234,240,0.7);">Name</label> <input type="text" id="contact-name" required class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2" style="background:rgba(108,92,231,0.08);border:1px solid rgba(108,92,231,0.2);color:var(--text);--tw-ring-color:var(--primary);" placeholder="Your name">
+       </div>
+       <div>
+        <label for="contact-email" class="block text-sm font-medium mb-1.5" style="color:rgba(232,234,240,0.7);">Email</label> <input type="email" id="contact-email" required class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2" style="background:rgba(108,92,231,0.08);border:1px solid rgba(108,92,231,0.2);color:var(--text);--tw-ring-color:var(--primary);" placeholder="you@email.com">
+       </div>
+       <div>
+        <label for="contact-message" class="block text-sm font-medium mb-1.5" style="color:rgba(232,234,240,0.7);">Message</label> <textarea id="contact-message" rows="4" required class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2 resize-none" style="background:rgba(108,92,231,0.08);border:1px solid rgba(108,92,231,0.2);color:var(--text);--tw-ring-color:var(--primary);" placeholder="How can we help?"></textarea>
+       </div><button type="submit" class="w-full py-3.5 rounded-xl font-semibold text-white transition-all hover:scale-[1.02]" style="background:linear-gradient(135deg,var(--primary),#a29bfe);"> Send Message </button>
+       <div id="contact-success" class="hidden text-center p-4 rounded-xl" style="background:rgba(0,184,148,0.15);color:#00b894;">
+        <i data-lucide="check-circle" style="width:24px;height:24px;display:inline;vertical-align:middle;margin-right:6px;"></i> Message sent! We'll get back to you soon.
+       </div>
+      </form>
+     </div>
+    </section>
+   </main><!-- ===================== PRIVACY PAGE ===================== -->
+   <main id="page-privacy" class="page-content hidden">
+    <section class="hero-bg relative overflow-hidden pt-24 pb-12 px-4">
+     <div class="max-w-5xl mx-auto text-center relative z-10">
+      <h1 class="font-display text-4xl font-bold mb-4" style="color:var(--text);">Privacy &amp; Terms</h1>
+     </div>
+    </section>
+    <section class="py-16 px-4">
+     <div class="max-w-3xl mx-auto rounded-2xl p-8" style="background:var(--surface);border:1px solid rgba(108,92,231,0.15);">
+      <h2 class="text-xl font-bold mb-4" style="color:var(--text);">Privacy Policy</h2>
+      <p class="text-sm mb-6 leading-relaxed" style="color:rgba(232,234,240,0.6);">QuizToolHub respects your privacy. We do not collect personal data. All quizzes and games run locally in your browser. No data is shared with third parties.</p>
+      <h2 class="text-xl font-bold mb-4" style="color:var(--text);">Terms of Use</h2>
+      <p class="text-sm mb-4 leading-relaxed" style="color:rgba(232,234,240,0.6);">All content on QuizToolHub.com is for educational and entertainment purposes only. IQ test results are not scientifically validated and should not be used for clinical assessment.</p>
+      <p class="text-sm leading-relaxed" style="color:rgba(232,234,240,0.6);">By using this site, you agree that all quizzes, games, and test results are provided "as-is" for fun and learning.</p>
+     </div>
+    </section>
+   </main><!-- ===================== FOOTER ===================== -->
+   <footer class="py-12 px-4" style="background:var(--surface);border-top:1px solid rgba(108,92,231,0.1);">
+    <div class="max-w-6xl mx-auto">
+     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+      <div>
+       <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+         <i data-lucide="brain" style="width:16px;height:16px;color:#fff;"></i>
+        </div><span id="footer-site-name" class="font-bold" style="color:var(--text);">QuizToolHub</span>
+       </div>
+       <p class="text-xs" style="color:rgba(232,234,240,0.4);">Free online hub for quizzes, brain training, and learning tools.</p>
+      </div>
+      <div>
+       <h4 class="text-sm font-bold mb-3" style="color:var(--text);">Tools</h4>
+       <div class="space-y-2">
+        <a onclick="navigateTo('quiztools')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">Quiz Tools</a> <a onclick="navigateTo('braingames')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">Brain Games</a> <a onclick="navigateTo('iqtest')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">IQ Tests</a>
+       </div>
+      </div>
+      <div>
+       <h4 class="text-sm font-bold mb-3" style="color:var(--text);">Resources</h4>
+       <div class="space-y-2">
+        <a onclick="navigateTo('blog')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">Blog</a> <a onclick="navigateTo('about')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">About Us</a> <a onclick="navigateTo('contact')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">Contact</a>
+       </div>
+      </div>
+      <div>
+       <h4 class="text-sm font-bold mb-3" style="color:var(--text);">Legal</h4>
+       <div class="space-y-2">
+        <a onclick="navigateTo('privacy')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">Privacy Policy</a> <a onclick="navigateTo('privacy')" class="block text-xs cursor-pointer hover:underline" style="color:rgba(232,234,240,0.5);">Terms of Use</a>
+       </div>
+      </div>
+     </div>
+     <div class="pt-6 text-center text-xs" style="border-top:1px solid rgba(108,92,231,0.1);color:rgba(232,234,240,0.3);">
+      © 2025–26 QuizToolHub.com – All rights reserved. For educational &amp; entertainment purposes only.
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+// =================== CONFIG & SDK ===================
+const defaultConfig = {
+  site_name: 'QuizToolHub',
+  headline: 'Welcome to QuizToolHub',
+  subheadline: 'Boost your brain, test your skills, and have fun with quizzes, brain games, and IQ tests!',
+  about_text: 'QuizToolHub is your free online destination for quizzes, brain games, and IQ tests. We believe learning should be fun, accessible, and engaging for everyone.',
+  background_color: '#0a0e1a',
+  surface_color: '#141929',
+  text_color: '#e8eaf0',
+  primary_color: '#6c5ce7',
+  secondary_color: '#00cec9',
+  font_family: 'Outfit',
+  font_size: 16
+};
+
+function applyConfig(config) {
+  const c = { ...defaultConfig, ...config };
+
+  // Colors
+  document.documentElement.style.setProperty('--bg', c.background_color);
+  document.documentElement.style.setProperty('--surface', c.surface_color);
+  document.documentElement.style.setProperty('--text', c.text_color);
+  document.documentElement.style.setProperty('--primary', c.primary_color);
+  document.documentElement.style.setProperty('--secondary', c.secondary_color);
+
+  // Text
+  const navName = document.getElementById('nav-site-name');
+  if (navName) navName.textContent = c.site_name;
+  const footerName = document.getElementById('footer-site-name');
+  if (footerName) footerName.textContent = c.site_name;
+
+  const heroHL = document.getElementById('hero-headline');
+  if (heroHL) heroHL.innerHTML = c.headline.includes(c.site_name)
+    ? c.headline.replace(c.site_name, `<span style="background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${c.site_name}</span>`)
+    : `${c.headline} <span style="background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${c.site_name}</span>`;
+
+  const heroSub = document.getElementById('hero-subheadline');
+  if (heroSub) heroSub.textContent = c.subheadline;
+
+  const aboutText = document.getElementById('about-text');
+  if (aboutText) aboutText.textContent = c.about_text;
+
+  // Font
+  const fontStack = `${c.font_family}, 'Outfit', sans-serif`;
+  document.body.style.fontFamily = fontStack;
+
+  // Font size
+  const base = c.font_size;
+  document.body.style.fontSize = `${base}px`;
+}
+
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => { applyConfig(config); },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => { config.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); } },
+        { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => { config.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); } }
+      ],
+      borderables: [],
+      fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+      fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['site_name', config.site_name || defaultConfig.site_name],
+      ['headline', config.headline || defaultConfig.headline],
+      ['subheadline', config.subheadline || defaultConfig.subheadline],
+      ['about_text', config.about_text || defaultConfig.about_text]
+    ])
+  });
+}
+
+// =================== NAVIGATION ===================
+let currentPage = 'home';
+function navigateTo(page) {
+  document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+  const target = document.getElementById('page-' + page);
+  if (target) { target.classList.remove('hidden'); }
+  currentPage = page;
+  // Update nav active
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.remove('nav-active');
+    if (l.dataset.page === page) l.classList.add('nav-active');
+  });
+  // Scroll to top
+  document.getElementById('app').scrollTop = 0;
+  lucide.createIcons();
+}
+
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+
+// =================== BLOG DATA ===================
+const blogPosts = [
+  { id: 1, title: "How to Take an IQ Test Online", cat: "iq", icon: "brain", color: "#fd79a8", excerpt: "Learn how to prepare for and take an online IQ test for the best results." },
+  { id: 2, title: "Top 5 Free IQ Tests Today", cat: "iq", icon: "star", color: "#fd79a8", excerpt: "We review the most popular free IQ tests available online." },
+  { id: 3, title: "Tips to Improve Your IQ", cat: "iq", icon: "trending-up", color: "#fd79a8", excerpt: "Science-backed strategies to boost cognitive performance." },
+  { id: 4, title: "Fun Logic Puzzles for Your Brain", cat: "logic", icon: "lightbulb", color: "#6c5ce7", excerpt: "Challenge yourself with these entertaining logic puzzles." },
+  { id: 5, title: "Best Brain Teasers for Kids & Adults", cat: "logic", icon: "puzzle", color: "#6c5ce7", excerpt: "A collection of brain teasers suitable for all ages." },
+  { id: 6, title: "Fun Math Quizzes", cat: "logic", icon: "calculator", color: "#6c5ce7", excerpt: "Test your math skills with these fun and challenging quizzes." },
+  { id: 7, title: "Easy Logic Puzzles", cat: "logic", icon: "grid", color: "#6c5ce7", excerpt: "Start with these beginner-friendly logic challenges." },
+  { id: 8, title: "Solve Math Puzzles Faster", cat: "logic", icon: "zap", color: "#00cec9", excerpt: "Speed techniques for mathematical problem solving." },
+  { id: 9, title: "Brain Games for Problem-Solving", cat: "brain", icon: "gamepad-2", color: "#00cec9", excerpt: "Games designed to enhance your problem-solving abilities." },
+  { id: 10, title: "10 Logic Challenges", cat: "logic", icon: "target", color: "#6c5ce7", excerpt: "Push your logical thinking to the limit with these challenges." },
+  { id: 11, title: "Vocabulary Quiz Online", cat: "language", icon: "book", color: "#fdcb6e", excerpt: "Expand your vocabulary with our interactive word quizzes." },
+  { id: 12, title: "How Quizzes Improve Language", cat: "language", icon: "message-circle", color: "#fdcb6e", excerpt: "The science behind quiz-based language learning." },
+  { id: 13, title: "Fun English Grammar Quizzes", cat: "language", icon: "check-circle", color: "#fdcb6e", excerpt: "Test and improve your grammar knowledge the fun way." },
+  { id: 14, title: "Top 10 Word Games", cat: "language", icon: "type", color: "#fdcb6e", excerpt: "The best word games to play for vocabulary building." },
+  { id: 15, title: "Learn New Words with Quizzes", cat: "language", icon: "book-open", color: "#fdcb6e", excerpt: "A quiz-driven approach to learning new vocabulary daily." },
+  { id: 16, title: "Memory Games Online", cat: "brain", icon: "grid", color: "#00cec9", excerpt: "Play free memory games to boost your recall abilities." },
+  { id: 17, title: "Tips to Boost Memory", cat: "brain", icon: "cpu", color: "#00cec9", excerpt: "Proven techniques to enhance your memory retention." },
+  { id: 18, title: "Brain Teasers for Cognitive Skills", cat: "brain", icon: "brain", color: "#00cec9", excerpt: "Sharpen multiple cognitive skills with these teasers." },
+  { id: 19, title: "Best Online Brain Games", cat: "brain", icon: "monitor", color: "#00cec9", excerpt: "Our picks for the best brain training games online." },
+  { id: 20, title: "5-Minute Daily Quiz Challenge", cat: "fun", icon: "clock", color: "#a29bfe", excerpt: "A quick daily quiz to keep your mind sharp." },
+  { id: 21, title: "Trivia Quizzes with Friends", cat: "fun", icon: "users", color: "#a29bfe", excerpt: "Fun trivia quizzes perfect for playing with friends." },
+  { id: 22, title: "Fun Personality Quizzes", cat: "fun", icon: "smile", color: "#a29bfe", excerpt: "Discover fun things about yourself with personality quizzes." },
+  { id: 23, title: "Logic Quiz Battle", cat: "fun", icon: "swords", color: "#a29bfe", excerpt: "Compete in a logic quiz battle and test your wits." },
+  { id: 24, title: "Free Games for a Sharp Mind", cat: "fun", icon: "sparkles", color: "#a29bfe", excerpt: "Free games designed to keep your mind in top shape." },
+  { id: 25, title: "10 Fun Quizzes Everyone Should Try", cat: "fun", icon: "trophy", color: "#a29bfe", excerpt: "Must-try quizzes that are entertaining and educational." }
+];
+
+function renderBlogCards(container, posts, limit) {
+  const items = limit ? posts.slice(0, limit) : posts;
+  container.innerHTML = items.map(p => `
+    <article class="card-hover rounded-2xl overflow-hidden cursor-pointer" style="background:var(--surface);border:1px solid rgba(108,92,231,0.1);" onclick="viewBlogPost(${p.id})">
+      <div class="blog-thumb h-36 flex items-center justify-center">
+        <i data-lucide="${p.icon}" style="width:48px;height:48px;color:${p.color};opacity:0.6;"></i>
+      </div>
+      <div class="p-5">
+        <span class="text-xs font-semibold px-2 py-1 rounded-md" style="background:rgba(108,92,231,0.1);color:var(--primary);">${p.cat.toUpperCase()}</span>
+        <h3 class="text-base font-bold mt-3 mb-2" style="color:var(--text);">${p.title}</h3>
+        <p class="text-xs" style="color:rgba(232,234,240,0.5);">${p.excerpt}</p>
+      </div>
+    </article>
+  `).join('');
+  lucide.createIcons();
+}
+
+let currentBlogFilter = 'all';
+function filterBlog(cat) {
+  currentBlogFilter = cat;
+  const filtered = cat === 'all' ? blogPosts : blogPosts.filter(p => p.cat === cat);
+  renderBlogCards(document.getElementById('blog-grid'), filtered);
+  // Update filter buttons
+  document.querySelectorAll('.blog-filter-btn').forEach(btn => {
+    btn.style.background = 'rgba(108,92,231,0.15)';
+    btn.style.color = 'var(--primary)';
+  });
+  event.target.style.background = 'var(--primary)';
+  event.target.style.color = '#fff';
+}
+
+function viewBlogPost(id) {
+  const post = blogPosts.find(p => p.id === id);
+  if (!post) return;
+  // Show inline blog post view
+  const grid = document.getElementById('blog-grid');
+  grid.innerHTML = `
+    <div class="col-span-full">
+      <button onclick="filterBlog('${currentBlogFilter}')" class="mb-6 flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80" style="color:var(--primary);">
+        <i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Back to Blog
+      </button>
+      <article class="rounded-2xl p-8" style="background:var(--surface);border:1px solid rgba(108,92,231,0.15);">
+        <div class="blog-thumb h-48 rounded-xl flex items-center justify-center mb-6">
+          <i data-lucide="${post.icon}" style="width:64px;height:64px;color:${post.color};opacity:0.6;"></i>
+        </div>
+        <span class="text-xs font-semibold px-2 py-1 rounded-md" style="background:rgba(108,92,231,0.1);color:var(--primary);">${post.cat.toUpperCase()}</span>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold mt-4 mb-4" style="color:var(--text);">${post.title}</h1>
+        <p class="text-sm leading-relaxed mb-4" style="color:rgba(232,234,240,0.65);">${post.excerpt}</p>
+        <p class="text-sm leading-relaxed" style="color:rgba(232,234,240,0.55);">This article explores key strategies and insights related to ${post.title.toLowerCase()}. Whether you're a beginner or experienced, these tips will help you improve your skills and enjoy the learning process. Stay tuned for more in-depth guides and tutorials!</p>
+      </article>
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+// =================== QUIZ GAME ENGINE ===================
+const quizData = {
+  math: [
+    { q: "What is 15 × 8?", opts: ["110", "120", "130", "125"], correct: 1 },
+    { q: "√144 = ?", opts: ["11", "12", "13", "14"], correct: 1 },
+    { q: "What is 7³?", opts: ["343", "347", "337", "349"], correct: 0 },
+    { q: "45 + 67 × 2 = ?", opts: ["224", "179", "134", "189"], correct: 1 },
+    { q: "What is 20% of 250?", opts: ["40", "45", "50", "55"], correct: 2 }
+  ],
+  logic: [
+    { q: "If all cats are animals, and Whiskers is a cat, then...", opts: ["Whiskers is a plant", "Whiskers is an animal", "All animals are cats", "None of the above"], correct: 1 },
+    { q: "What comes next: 2, 6, 12, 20, ?", opts: ["28", "30", "32", "26"], correct: 1 },
+    { q: "If A > B, B > C, then...", opts: ["C > A", "A > C", "A = C", "Can't tell"], correct: 1 },
+    { q: "Odd one out: Apple, Banana, Carrot, Mango", opts: ["Apple", "Banana", "Carrot", "Mango"], correct: 2 },
+    { q: "Complete: 1, 1, 2, 3, 5, 8, ?", opts: ["11", "12", "13", "10"], correct: 2 }
+  ],
+  english: [
+    { q: "Which word is a synonym of 'happy'?", opts: ["Sad", "Joyful", "Angry", "Tired"], correct: 1 },
+    { q: "Choose the correct spelling:", opts: ["Accomodate", "Accommodate", "Acomodate", "Acommodate"], correct: 1 },
+    { q: "'She ___ to school every day.'", opts: ["go", "goes", "going", "gone"], correct: 1 },
+    { q: "What is an antonym of 'ancient'?", opts: ["Old", "Historic", "Modern", "Vintage"], correct: 2 },
+    { q: "Which is a noun?", opts: ["Run", "Beautiful", "Happiness", "Quickly"], correct: 2 }
+  ],
+  trivia: [
+    { q: "What is the capital of Japan?", opts: ["Seoul", "Beijing", "Tokyo", "Bangkok"], correct: 2 },
+    { q: "Who painted the Mona Lisa?", opts: ["Picasso", "Da Vinci", "Van Gogh", "Monet"], correct: 1 },
+    { q: "How many continents are there?", opts: ["5", "6", "7", "8"], correct: 2 },
+    { q: "Which planet is known as the Red Planet?", opts: ["Venus", "Mars", "Jupiter", "Saturn"], correct: 1 },
+    { q: "What year did the Titanic sink?", opts: ["1910", "1912", "1914", "1916"], correct: 1 }
+  ]
+};
+
+let quizState = { category: '', current: 0, score: 0, answered: false };
+
+function startQuiz(category) {
+  quizState = { category, current: 0, score: 0, answered: false };
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const area = document.getElementById('quiz-area');
+  const data = quizData[quizState.category];
+  if (quizState.current >= data.length) {
+    // Show results
+    const pct = Math.round((quizState.score / data.length) * 100);
+    const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : pct >= 40 ? '🤔' : '💪';
+    area.innerHTML = `
+      <div class="text-center py-8">
+        <div class="text-6xl mb-4">${emoji}</div>
+        <h3 class="text-2xl font-bold mb-2" style="color:var(--text);">Quiz Complete!</h3>
+        <p class="text-lg mb-2" style="color:var(--primary);">${quizState.score} / ${data.length} correct (${pct}%)</p>
+        <div class="w-64 h-3 rounded-full mx-auto mb-6 overflow-hidden" style="background:rgba(108,92,231,0.15);">
+          <div class="progress-fill h-full rounded-full" style="width:${pct}%;"></div>
+        </div>
+        <button onclick="startQuiz('${quizState.category}')" class="px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background:linear-gradient(135deg,var(--primary),#a29bfe);">
+          Try Again
+        </button>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+  const q = data[quizState.current];
+  area.innerHTML = `
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <span class="text-xs font-semibold px-3 py-1 rounded-lg" style="background:rgba(108,92,231,0.15);color:var(--primary);">${quizState.category.toUpperCase()}</span>
+        <span class="text-sm font-medium" style="color:rgba(232,234,240,0.5);">Question ${quizState.current + 1} of ${data.length}</span>
+      </div>
+      <div class="w-full h-2 rounded-full mb-8 overflow-hidden" style="background:rgba(108,92,231,0.1);">
+        <div class="progress-fill h-full rounded-full" style="width:${((quizState.current) / data.length) * 100}%;"></div>
+      </div>
+      <h3 class="text-xl font-bold mb-6" style="color:var(--text);">${q.q}</h3>
+      <div class="grid gap-3">
+        ${q.opts.map((opt, i) => `
+          <button onclick="answerQuiz(${i})" class="quiz-option rounded-xl px-5 py-4 text-left font-medium text-sm" style="background:var(--bg);color:var(--text);" id="quiz-opt-${i}">
+            <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg mr-3 text-xs font-bold" style="background:rgba(108,92,231,0.15);color:var(--primary);">${String.fromCharCode(65 + i)}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  quizState.answered = false;
+  lucide.createIcons();
+}
+
+function answerQuiz(idx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const data = quizData[quizState.category];
+  const q = data[quizState.current];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach((o, i) => {
+    if (i === q.correct) o.classList.add('correct');
+    else if (i === idx) o.classList.add('wrong');
+    o.style.pointerEvents = 'none';
+  });
+  if (idx === q.correct) quizState.score++;
+  setTimeout(() => {
+    quizState.current++;
+    renderQuizQuestion();
+  }, 1200);
+}
+
+// =================== BRAIN GAMES ===================
+// Memory Match Game
+let memoryState = { cards: [], flipped: [], matched: [], moves: 0, lock: false };
+const memoryEmojis = ['🧠', '⚡', '🎯', '🔥', '💡', '🎮', '🏆', '✨'];
+
+function startBrainGame(type) {
+  if (type === 'memory') startMemoryGame();
+  else if (type === 'speed') startSpeedGame();
+  else if (type === 'puzzle') startNumberPuzzle();
+}
+
+function startMemoryGame() {
+  const emojis = [...memoryEmojis, ...memoryEmojis];
+  memoryState = { cards: emojis.sort(() => Math.random() - 0.5), flipped: [], matched: [], moves: 0, lock: false };
+  renderMemoryGame();
+}
+
+function renderMemoryGame() {
+  const area = document.getElementById('braingame-area');
+  area.innerHTML = `
+    <div class="text-center mb-6">
+      <h3 class="text-xl font-bold mb-1" style="color:var(--text);">Memory Match</h3>
+      <p class="text-sm" style="color:rgba(232,234,240,0.5);">Moves: <span id="memory-moves">${memoryState.moves}</span> | Matched: <span id="memory-matched">${memoryState.matched.length / 2}</span> / 8</p>
+    </div>
+    <div class="flex flex-wrap justify-center gap-3" id="memory-grid">
+      ${memoryState.cards.map((emoji, i) => `
+        <div class="memory-card ${memoryState.flipped.includes(i) || memoryState.matched.includes(i) ? 'flipped' : ''}" onclick="flipCard(${i})" id="mcard-${i}">
+          <div class="memory-card-inner">
+            <div class="memory-card-front"><i data-lucide="help-circle" style="width:28px;height:28px;color:#fff;opacity:0.5;"></i></div>
+            <div class="memory-card-back">${emoji}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+function flipCard(idx) {
+  if (memoryState.lock || memoryState.flipped.includes(idx) || memoryState.matched.includes(idx)) return;
+  memoryState.flipped.push(idx);
+  document.getElementById('mcard-' + idx).classList.add('flipped');
+
+  if (memoryState.flipped.length === 2) {
+    memoryState.moves++;
+    document.getElementById('memory-moves').textContent = memoryState.moves;
+    const [a, b] = memoryState.flipped;
+    if (memoryState.cards[a] === memoryState.cards[b]) {
+      memoryState.matched.push(a, b);
+      memoryState.flipped = [];
+      document.getElementById('memory-matched').textContent = memoryState.matched.length / 2;
+      if (memoryState.matched.length === memoryState.cards.length) {
+        setTimeout(() => {
+          const area = document.getElementById('braingame-area');
+          area.innerHTML = `
+            <div class="text-center py-8">
+              <div class="text-6xl mb-4">🎉</div>
+              <h3 class="text-2xl font-bold mb-2" style="color:var(--text);">You Won!</h3>
+              <p class="text-lg mb-6" style="color:var(--secondary);">Completed in ${memoryState.moves} moves</p>
+              <button onclick="startMemoryGame()" class="px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background:linear-gradient(135deg,var(--primary),#a29bfe);">Play Again</button>
+            </div>
+          `;
+        }, 600);
+      }
+    } else {
+      memoryState.lock = true;
+      setTimeout(() => {
+        document.getElementById('mcard-' + a).classList.remove('flipped');
+        document.getElementById('mcard-' + b).classList.remove('flipped');
+        memoryState.flipped = [];
+        memoryState.lock = false;
+      }, 800);
+    }
+  }
+}
+
+// Speed Tap Game
+let speedState = { score: 0, timeLeft: 15, timer: null, active: false };
+
+function startSpeedGame() {
+  speedState = { score: 0, timeLeft: 15, timer: null, active: true };
+  renderSpeedGame();
+  speedState.timer = setInterval(() => {
+    speedState.timeLeft--;
+    const tl = document.getElementById('speed-time');
+    if (tl) tl.textContent = speedState.timeLeft;
+    if (speedState.timeLeft <= 0) {
+      clearInterval(speedState.timer);
+      speedState.active = false;
+      showSpeedResults();
+    }
+  }, 1000);
+  spawnDot();
+}
+
+function renderSpeedGame() {
+  const area = document.getElementById('braingame-area');
+  area.innerHTML = `
+    <div class="text-center mb-4">
+      <h3 class="text-xl font-bold mb-1" style="color:var(--text);">Speed Tap</h3>
+      <p class="text-sm" style="color:rgba(232,234,240,0.5);">Tap the circles as fast as you can!</p>
+      <div class="flex justify-center gap-6 mt-3">
+        <span class="text-sm font-bold" style="color:var(--secondary);">Score: <span id="speed-score">0</span></span>
+        <span class="text-sm font-bold" style="color:#fd79a8;">Time: <span id="speed-time">15</span>s</span>
+      </div>
+    </div>
+    <div id="speed-field" class="relative rounded-xl mx-auto" style="width:100%;max-width:400px;height:300px;background:rgba(108,92,231,0.05);border:1px solid rgba(108,92,231,0.15);overflow:hidden;"></div>
+  `;
+}
+
+function spawnDot() {
+  if (!speedState.active) return;
+  const field = document.getElementById('speed-field');
+  if (!field) return;
+  field.innerHTML = '';
+  const size = 50;
+  const x = Math.random() * (field.offsetWidth - size);
+  const y = Math.random() * (field.offsetHeight - size);
+  const dot = document.createElement('div');
+  dot.className = 'speed-dot';
+  dot.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:var(--primary);position:absolute;left:${x}px;top:${y}px;cursor:pointer;transition:transform 0.1s;box-shadow:0 0 20px rgba(108,92,231,0.5);`;
+  dot.onclick = () => {
+    speedState.score++;
+    const sc = document.getElementById('speed-score');
+    if (sc) sc.textContent = speedState.score;
+    dot.style.transform = 'scale(0)';
+    setTimeout(spawnDot, 200);
+  };
+  field.appendChild(dot);
+}
+
+function showSpeedResults() {
+  const area = document.getElementById('braingame-area');
+  const rating = speedState.score >= 20 ? '⚡ Lightning Fast!' : speedState.score >= 12 ? '🔥 Great Reflexes!' : speedState.score >= 6 ? '👍 Good Start!' : '💪 Keep Practicing!';
+  area.innerHTML = `
+    <div class="text-center py-8">
+      <div class="text-6xl mb-4">⏱️</div>
+      <h3 class="text-2xl font-bold mb-2" style="color:var(--text);">Time's Up!</h3>
+      <p class="text-lg mb-2" style="color:var(--secondary);">You tapped ${speedState.score} circles!</p>
+      <p class="text-sm mb-6" style="color:rgba(232,234,240,0.5);">${rating}</p>
+      <button onclick="startSpeedGame()" class="px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background:linear-gradient(135deg,var(--secondary),#00b894);">Play Again</button>
+    </div>
+  `;
+}
+
+// Number Puzzle
+let puzzleState = { numbers: [], moves: 0 };
+
+function startNumberPuzzle() {
+  const nums = [1,2,3,4,5,6,7,8,null];
+  // Shuffle with solvable check
+  do {
+    for (let i = nums.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [nums[i], nums[j]] = [nums[j], nums[i]];
+    }
+  } while (!isSolvable(nums));
+  puzzleState = { numbers: nums, moves: 0 };
+  renderNumberPuzzle();
+}
+
+function isSolvable(arr) {
+  let inv = 0;
+  const flat = arr.filter(n => n !== null);
+  for (let i = 0; i < flat.length; i++) {
+    for (let j = i + 1; j < flat.length; j++) {
+      if (flat[i] > flat[j]) inv++;
+    }
+  }
+  return inv % 2 === 0;
+}
+
+function renderNumberPuzzle() {
+  const area = document.getElementById('braingame-area');
+  area.innerHTML = `
+    <div class="text-center mb-6">
+      <h3 class="text-xl font-bold mb-1" style="color:var(--text);">Number Puzzle</h3>
+      <p class="text-sm" style="color:rgba(232,234,240,0.5);">Arrange 1–8 in order. Moves: <span id="puzzle-moves">${puzzleState.moves}</span></p>
+    </div>
+    <div class="grid grid-cols-3 gap-2 max-w-[240px] mx-auto" id="puzzle-grid">
+      ${puzzleState.numbers.map((n, i) => n === null
+        ? `<div class="w-20 h-20 rounded-xl" style="background:transparent;" id="ptile-${i}"></div>`
+        : `<button onclick="moveTile(${i})" class="w-20 h-20 rounded-xl text-xl font-bold transition-all hover:scale-105" style="background:linear-gradient(135deg,var(--primary),#a29bfe);color:#fff;border:none;cursor:pointer;" id="ptile-${i}">${n}</button>`
+      ).join('')}
+    </div>
+  `;
+}
+
+function moveTile(idx) {
+  const emptyIdx = puzzleState.numbers.indexOf(null);
+  const validMoves = [];
+  if (emptyIdx % 3 !== 0) validMoves.push(emptyIdx - 1);
+  if (emptyIdx % 3 !== 2) validMoves.push(emptyIdx + 1);
+  if (emptyIdx >= 3) validMoves.push(emptyIdx - 3);
+  if (emptyIdx < 6) validMoves.push(emptyIdx + 3);
+
+  if (validMoves.includes(idx)) {
+    [puzzleState.numbers[emptyIdx], puzzleState.numbers[idx]] = [puzzleState.numbers[idx], puzzleState.numbers[emptyIdx]];
+    puzzleState.moves++;
+    renderNumberPuzzle();
+
+    // Check win
+    const target = [1,2,3,4,5,6,7,8,null];
+    if (puzzleState.numbers.every((n, i) => n === target[i])) {
+      setTimeout(() => {
+        const area = document.getElementById('braingame-area');
+        area.innerHTML = `
+          <div class="text-center py-8">
+            <div class="text-6xl mb-4">🧩</div>
+            <h3 class="text-2xl font-bold mb-2" style="color:var(--text);">Puzzle Solved!</h3>
+            <p class="text-lg mb-6" style="color:#fd79a8;">Completed in ${puzzleState.moves} moves</p>
+            <button onclick="startNumberPuzzle()" class="px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background:linear-gradient(135deg,#fd79a8,#e17055);">Play Again</button>
+          </div>
+        `;
+      }, 300);
+    }
+  }
+}
+
+// =================== IQ TEST ===================
+const iqQuestions = [
+  { q: "What comes next in the sequence: 3, 6, 12, 24, ?", opts: ["36", "48", "30", "42"], correct: 1 },
+  { q: "If MOUSE is coded as PRXVH, what is CAT?", opts: ["FDW", "DBU", "ECT", "FDV"], correct: 0 },
+  { q: "Which shape completes the pattern? □ △ ○ □ △ ?", opts: ["□", "△", "○", "◇"], correct: 2 },
+  { q: "A clock shows 3:15. What angle between the hands?", opts: ["0°", "7.5°", "15°", "22.5°"], correct: 1 },
+  { q: "If 5 machines make 5 widgets in 5 minutes, how long for 100 machines to make 100 widgets?", opts: ["100 min", "5 min", "20 min", "50 min"], correct: 1 },
+  { q: "Which number doesn't belong: 2, 3, 5, 9, 11, 13?", opts: ["2", "9", "11", "13"], correct: 1 },
+  { q: "If all Bloops are Razzies, and all Razzies are Lazzies, then all Bloops are definitely:", opts: ["Razzies only", "Lazzies", "Both A & B", "Neither"], correct: 2 },
+  { q: "What is the next prime number after 31?", opts: ["33", "35", "37", "39"], correct: 2 },
+  { q: "Rearrange: THENOMIP → A famous scientist", opts: ["THOMPSON", "EINSTEIN", "HAMILTON", "OPTION M"], correct: 0 },
+  { q: "If you overtake 2nd place in a race, what position are you in?", opts: ["1st", "2nd", "3rd", "4th"], correct: 1 }
+];
+
+let iqState = { current: 0, score: 0, answered: false };
+
+function startIQTest() {
+  iqState = { current: 0, score: 0, answered: false };
+  renderIQQuestion();
+}
+
+function renderIQQuestion() {
+  const area = document.getElementById('iq-area');
+  if (iqState.current >= iqQuestions.length) {
+    // Calculate "IQ" score (for fun)
+    const raw = iqState.score / iqQuestions.length;
+    const iq = Math.round(80 + raw * 55);
+    const pct = Math.min(100, Math.round(((iq - 60) / 100) * 100));
+    const label = iq >= 130 ? 'Exceptional! 🌟' : iq >= 115 ? 'Above Average! 🎯' : iq >= 100 ? 'Average 👍' : iq >= 85 ? 'Below Average 🤔' : 'Keep Practicing! 💪';
+    area.innerHTML = `
+      <div class="text-center py-8">
+        <div class="text-6xl mb-4">🧠</div>
+        <h3 class="text-2xl font-bold mb-2" style="color:var(--text);">Your IQ Score</h3>
+        <div class="text-5xl font-bold mb-2" style="background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${iq}</div>
+        <p class="text-base mb-4" style="color:#fd79a8;">${label}</p>
+        <div class="w-72 h-4 rounded-full mx-auto mb-2 overflow-hidden" style="background:rgba(108,92,231,0.15);">
+          <div class="iq-meter-fill h-full rounded-full" style="width:${pct}%;"></div>
+        </div>
+        <p class="text-xs mb-6" style="color:rgba(232,234,240,0.4);">Score: ${iqState.score}/${iqQuestions.length} correct • For entertainment purposes only</p>
+        <button onclick="startIQTest()" class="px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background:linear-gradient(135deg,#fd79a8,#e17055);">
+          Retake Test
+        </button>
+      </div>
+    `;
+    // Animate IQ meter
+    setTimeout(() => {
+      const meter = area.querySelector('.iq-meter-fill');
+      if (meter) meter.style.width = pct + '%';
+    }, 100);
+    return;
+  }
+  const q = iqQuestions[iqState.current];
+  area.innerHTML = `
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <span class="text-xs font-semibold px-3 py-1 rounded-lg" style="background:rgba(253,121,168,0.15);color:#fd79a8;">IQ TEST</span>
+        <span class="text-sm font-medium" style="color:rgba(232,234,240,0.5);">Question ${iqState.current + 1} / ${iqQuestions.length}</span>
+      </div>
+      <div class="w-full h-2 rounded-full mb-8 overflow-hidden" style="background:rgba(253,121,168,0.1);">
+        <div class="h-full rounded-full" style="width:${(iqState.current / iqQuestions.length) * 100}%;background:linear-gradient(90deg,#fd79a8,#e17055);transition:width 0.5s;"></div>
+      </div>
+      <h3 class="text-lg font-bold mb-6" style="color:var(--text);">${q.q}</h3>
+      <div class="grid gap-3">
+        ${q.opts.map((opt, i) => `
+          <button onclick="answerIQ(${i})" class="quiz-option rounded-xl px-5 py-4 text-left font-medium text-sm" style="background:var(--bg);color:var(--text);" id="iq-opt-${i}">
+            <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg mr-3 text-xs font-bold" style="background:rgba(253,121,168,0.15);color:#fd79a8;">${String.fromCharCode(65 + i)}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  iqState.answered = false;
+  lucide.createIcons();
+}
+
+function answerIQ(idx) {
+  if (iqState.answered) return;
+  iqState.answered = true;
+  const q = iqQuestions[iqState.current];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach((o, i) => {
+    if (i === q.correct) o.classList.add('correct');
+    else if (i === idx) o.classList.add('wrong');
+    o.style.pointerEvents = 'none';
+  });
+  if (idx === q.correct) iqState.score++;
+  setTimeout(() => {
+    iqState.current++;
+    renderIQQuestion();
+  }, 1200);
+}
+
+// =================== CONTACT FORM ===================
+function handleContactSubmit(e) {
+  e.preventDefault();
+  document.getElementById('contact-success').classList.remove('hidden');
+  e.target.reset();
+  lucide.createIcons();
+  setTimeout(() => {
+    const s = document.getElementById('contact-success');
+    if (s) s.classList.add('hidden');
+  }, 4000);
+}
+
+// =================== INIT ===================
+document.addEventListener('DOMContentLoaded', () => {
+  // Render home blog
+  renderBlogCards(document.getElementById('home-blog-grid'), blogPosts, 6);
+  // Render full blog
+  renderBlogCards(document.getElementById('blog-grid'), blogPosts);
+  lucide.createIcons();
+});
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9dbed41ef2ab2704',t:'MTc3MzQ0NDY0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
